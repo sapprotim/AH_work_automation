@@ -1,0 +1,257 @@
+///Instruction
+AH Data Validation in Google Sheets
+Open the Google Sheet → Go to Extensions → Apps Script.
+Paste the script and rename it to match the tab’s name.
+Add two extra columns at the end for comments.
+Errors & inconsistencies will be highlighted in yellow.
+///
+
+function Checking_AH() {
+
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const sheetName = "Feb 2025"; // Use the name of your sheet
+  const sheet = spreadsheet.getSheetByName(sheetName);
+  const data = sheet.getDataRange().getValues();
+
+ 
+  // Iterate through each row (starting from the second row)
+  for (let i = 3; i < data.length; i++) {
+    // Get data from columns
+      user_id = data[i][1];
+      study_arm  = data[i][4];
+     
+
+
+      let hr = data[i][5];
+      if (hr === "Null" || hr == null) {
+        hr = 0;
+      }
+
+
+      let sleep = data[i][6];
+      if (sleep === "Null" || sleep == null || sleep.trim() === "") {
+        sleep = 0;
+      } else {
+        // Remove "hr" and "min" and split the string
+        let parts = sleep.replace(" hr", "").replace(" min", "").split(" ");
+        let hours = parseInt(parts[0]);
+        let minutes = parseInt(parts[1]);
+
+
+        // Convert minutes to fraction of an hour and round to 1 decimal place
+        sleep = Math.round((hours + (minutes / 60)) * 10) / 10;
+      }
+
+
+      let Steps = data[i][7];
+      if (Steps === "Null" || Steps == null) {
+        Steps = 0;
+      }
+
+
+      let Sedentary = data[i][8];
+      if (Sedentary === "Null" || Sedentary == null) {
+        Sedentary = 0;
+      }
+
+
+      let WearTime = data[i][9];
+      if (WearTime === "Null" || WearTime == null) {
+        WearTime = 0;
+      }
+
+
+      let Wellness = data[i][10];
+      if (Wellness === "Null" || Wellness == null) {
+        Wellness = 0;
+      }
+
+
+      let SpO2 = data[i][11];
+      if (SpO2 === "Null" || SpO2 == null) {
+        SpO2 = 0;
+      }
+
+
+      let AppOpens = data[i][12];
+      if (AppOpens === "Null" || AppOpens == null) {
+        AppOpens = 0;
+      }
+
+
+      let AppTime = data[i][13];
+      if (AppTime === "Null" || AppTime == null) {
+        AppTime = 0;
+      }
+
+
+      let Systolic = data[i][14];
+      if (Systolic === "Null" || Systolic == null) {
+        Systolic = 0;
+      }
+
+
+      let Diastolic = data[i][15];
+      if (Diastolic === "Null" || Diastolic == null) {
+        Diastolic = 0;
+      }
+
+
+      let Glucose = data[i][16];
+      if (Glucose === "Null" || Glucose == null) {
+        Glucose = 0;
+      }
+
+
+      let HbA1c = data[i][17];
+      if (HbA1c === "Null" || HbA1c == null) {
+        HbA1c = 0;
+      }
+
+
+      let Weight = data[i][18];
+      if (Weight === "Null" || Weight == null) {
+        Weight = 0;
+      }
+
+
+      let Height = data[i][19];
+      if (Height === "Null" || Height == null) {
+        Height = 0;
+      }
+
+
+      let Waist = data[i][20];
+      if (Waist === "Null" || Waist == null) {
+        Waist = 0;
+      }
+
+
+      let BMI = data[i][21];
+      if (BMI === "Null" || BMI == null) {
+        BMI = 0;
+      }
+
+
+      let Cholesterol = data[i][22];
+      if (Cholesterol === "Null" || Cholesterol == null) {
+        Cholesterol = 0;
+      }
+
+
+      // Logger.log("hr: " + hr);
+      // Logger.log("sleep: " + sleep);
+      // Logger.log("Steps: " + Steps);
+      // Logger.log("Sedentary: " + Sedentary);
+      // Logger.log("WearTime: " + WearTime);
+      // Logger.log("Wellness: " + Wellness);
+      // Logger.log("SpO2: " + SpO2);
+      // Logger.log("AppOpens: " + AppOpens);
+      // Logger.log("AppTime: " + AppTime);
+      // Logger.log("Systolic: " + Systolic);
+      // Logger.log("Diastolic: " + Diastolic);
+      // Logger.log("Glucose: " + Glucose);
+      // Logger.log("HbA1c: " + HbA1c);
+      // Logger.log("Weight: " + Weight);
+      // Logger.log("Height: " + Height);
+      // Logger.log("Waist: " + Waist);
+      // Logger.log("BMI: " + BMI);
+      // Logger.log("Cholesterol: " + Cholesterol);
+
+
+      // Conditions to check data and set value
+      if ((WearTime > 0 && hr === 0) || (hr > 0 && WearTime === 0)) {
+        sheet.getRange(i+1, 40).setValue("Check Weartime data");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 6).setBackground('yellow')
+      } 
+
+     
+      if ((WearTime >= 98 && Steps === 0) || (WearTime === 0 && Steps > 0) ) {
+        sheet.getRange(i+1, 40).setValue("Check Weartime data");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 8).setBackground('yellow')
+      } 
+
+      if (WearTime >= 98 && (sleep === 0)) {
+        sheet.getRange(i+1, 40).setValue("Check Weartime data");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 7).setBackground('yellow')
+      } 
+
+      if (WearTime === 0 && (sleep >= 1)) {
+        sheet.getRange(i+1, 40).setValue("Hr/Steps/Sleep data");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 7).setBackground('yellow')
+      }
+
+      if (WearTime === 0 && (sleep >= 1)) {
+        sheet.getRange(i+1, 40).setValue("Hr/Steps/Sleep data");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 6).setBackground('yellow')
+      }
+
+      if (WearTime <= 10 && (Steps > 1000 && Sedentary >= 1 && sleep > 2)) {
+        sheet.getRange(i+1, 40).setValue("WearTime_data low");
+        sheet.getRange(i+1, 10).setBackground('yellow')
+        sheet.getRange(i+1, 8).setBackground('yellow')
+        sheet.getRange(i+1, 9).setBackground('yellow')
+        sheet.getRange(i+1, 7).setBackground('yellow')
+      } 
+      if (SpO2 >= 1 && sleep === 0) {
+        sheet.getRange(i+1, 40).setValue("SpO2 sleep data");
+        sheet.getRange(i+1, 7).setBackground('yellow')
+        sheet.getRange(i+1, 12).setBackground('yellow')
+      } 
+      if ((AppOpens >= 1 && AppTime === 0) || (AppOpens === 0 && AppTime >= 1)) {
+        sheet.getRange(i+1, 40).setValue("AppOpens and AppTime");
+        sheet.getRange(i+1, 13).setBackground('yellow')
+        sheet.getRange(i+1, 14).setBackground('yellow')
+      } 
+
+
+
+
+
+      // Just checking value
+        if (user_id.length > 9) {
+        sheet.getRange(i+1, 41).setValue("Check user id");
+      }  
+        else if (study_arm > 3 || study_arm <= 0) {
+        sheet.getRange(i+1, 41).setValue("Check Study_Arm");
+      }
+        else if (hr > 150) {
+        sheet.getRange(i+1, 41).setValue("Check hr");
+      } else if (Steps > 40000) {
+        sheet.getRange(i+1, 41).setValue("Check Steps");
+      } else if (Sedentary > 1500) {
+        sheet.getRange(i+1, 41).setValue("Check Sedentary");
+      } else if (WearTime > 100) {
+        sheet.getRange(i+1, 41).setValue("Check WearTime");
+      } else if (Wellness > 100) {
+        sheet.getRange(i+1, 41).setValue("Check Wellness");
+      } else if (SpO2 > 100) {
+        sheet.getRange(i+1, 41).setValue("Check SpO2");
+      } else if (Systolic > 180) {
+        sheet.getRange(i+1, 41).setValue("Check Systolic");
+      } else if (Diastolic > 120) {
+        sheet.getRange(i+1, 41).setValue("Check Diastolic");
+      } else if (Glucose > 200) {
+        sheet.getRange(i+1, 41).setValue("Check Glucose");
+      } else if (HbA1c > 30) {
+        sheet.getRange(i+1, 41).setValue("Check HbA1c");
+      } else if (Weight > 150) {
+        sheet.getRange(i+1, 41).setValue("Check Weight");
+      } else if (Height > 200) {
+        sheet.getRange(i+1, 41).setValue("Check Height");
+      } else if (Waist > 150) {
+        sheet.getRange(i+1, 41).setValue("Check Waist");
+      } else if (BMI > 50) {
+        sheet.getRange(i+1, 41).setValue("Check BMI");
+      } else if (Cholesterol > 240) {
+        sheet.getRange(i+1, 41).setValue("Check Cholesterol");
+      } else {
+        sheet.getRange(i+1, 41).setValue("Passed");
+    }
+  }
+}

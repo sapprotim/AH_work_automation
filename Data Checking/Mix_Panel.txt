@@ -1,0 +1,29 @@
+function updateAddDataSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var addDataSheet = ss.getSheetByName("June 2025");
+  var dataSheet = ss.getSheetByName("Mixpanel");
+  
+  if (!addDataSheet || !dataSheet) {
+    Logger.log("Sheets not found");
+    return;
+  }
+  
+  var addData = addDataSheet.getDataRange().getValues();
+  var data = dataSheet.getDataRange().getValues();
+  
+  var dataMap = {};
+  
+  // Create a mapping from "data" sheet using columns A & B as keys
+  for (var i = 1; i < data.length; i++) {
+    var key = data[i][0] + "|" + data[i][1];
+    dataMap[key] = { cValue: data[i][2], dValue: data[i][3] }; // Store C and D column values
+  }
+  
+  for (var j = 1; j < addData.length; j++) {
+    var addKey = addData[j][1] + "|" + addData[j][2]; // Now checking from columns B & C
+    if (dataMap.hasOwnProperty(addKey)) {
+      addDataSheet.getRange(j + 1, 13).setValue(dataMap[addKey].cValue); // Update column M with C column data
+      addDataSheet.getRange(j + 1, 14).setValue(dataMap[addKey].dValue); // Update column N with D column data
+    }
+  }
+}
